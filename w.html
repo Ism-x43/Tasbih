@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dhikr Counter</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    text-align:center;
+    background:#1e293b;
+    padding:40px;
+    border-radius:20px;
+    width:320px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+.counter{
+    font-size:60px;
+    margin:20px 0;
+}
+
+button{
+    padding:12px 20px;
+    font-size:16px;
+    border:none;
+    border-radius:10px;
+    margin:6px;
+    cursor:pointer;
+}
+
+.countBtn{
+    background:#22c55e;
+    color:white;
+}
+
+.resetBtn{
+    background:#ef4444;
+    color:white;
+}
+
+.target{
+    margin-top:15px;
+    font-size:14px;
+    opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Dhikr Counter</h1>
+
+<div class="counter" id="counter">0</div>
+
+<button class="countBtn" onclick="count()">SubhanAllah</button>
+<button class="resetBtn" onclick="reset()">Reset</button>
+
+<div class="target">
+Target: 33
+</div>
+</div>
+
+<script>
+
+let countValue = 0;
+let target = 33;
+
+function count(){
+    countValue++;
+    document.getElementById("counter").innerText = countValue;
+
+    if(countValue == target){
+        alert("MashaAllah! You reached 33.");
+    }
+}
+
+function reset(){
+    countValue = 0;
+    document.getElementById("counter").innerText = countValue;
+}
+
+</script>
+
+</body>
+</html>
