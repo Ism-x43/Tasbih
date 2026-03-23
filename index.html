@@ -2,98 +2,189 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dhikr Counter</title>
+<title>Tasbih Counter</title>
 
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background: #0f172a;
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #0f1629, #05070f);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title {
+    color: #d4af37;
+    letter-spacing: 8px;
+    margin-bottom: 20px;
+}
+
+.counter {
+    font-size: 90px;
+    color: #e8e8e8;
+    margin-bottom: 40px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+.circle {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 2px solid rgba(212,175,55,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.circle:active {
+    box-shadow: 0 0 25px rgba(212,175,55,0.6);
+    transform: scale(0.97);
+}
+
+.circle.glow {
+    box-shadow: 0 0 30px rgba(212,175,55,0.5);
+    border-color: #d4af37;
+}
+
+.circle-text {
+    text-align: center;
+    color: #d4af37;
+}
+
+.circle-text span {
+    display: block;
+    margin-top: 8px;
+    font-size: 20px;
+    direction: rtl;
+}
+
+.dots {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+    transition: 0.3s;
+}
+
+.dot.filled {
+    background: #d4af37;
+    box-shadow: 0 0 10px #d4af37;
+}
+
+.levels {
+    color: #777;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.reset {
+    margin-top: 30px;
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.reset:hover {
     color: white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.container{
-    text-align:center;
-    background:#1e293b;
-    padding:40px;
-    border-radius:20px;
-    width:320px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
-
-h1{
-    margin-bottom:10px;
-}
-
-.counter{
-    font-size:60px;
-    margin:20px 0;
-}
-
-button{
-    padding:12px 20px;
-    font-size:16px;
-    border:none;
-    border-radius:10px;
-    margin:6px;
-    cursor:pointer;
-}
-
-.countBtn{
-    background:#22c55e;
-    color:white;
-}
-
-.resetBtn{
-    background:#ef4444;
-    color:white;
-}
-
-.target{
-    margin-top:15px;
-    font-size:14px;
-    opacity:0.8;
+    border-color: white;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="container">
-<h1>Dhikr Counter</h1>
+<div class="title">TASBIH</div>
 
 <div class="counter" id="counter">0</div>
 
-<button class="countBtn" onclick="count()">SubhanAllah</button>
-<button class="resetBtn" onclick="reset()">Reset</button>
+<div class="circle" id="circle" onclick="increment()">
+    <div class="circle-text">
+        PRESS
+        <span id="dhikr">سُبْحَانَ ٱللَّٰهِ</span>
+    </div>
+</div>
 
-<div class="target">
-Target: 33
+<div class="dots">
+    <div class="dot" id="dot1"></div>
+    <div class="dot" id="dot2"></div>
+    <div class="dot" id="dot3"></div>
 </div>
-</div>
+
+<div class="levels">33 &nbsp;&nbsp; 66 &nbsp;&nbsp; 99</div>
+
+<button class="reset" onclick="resetCounter()">RESET</button>
 
 <script>
+let count = 0;
 
-let countValue = 0;
-let target = 33;
+function increment() {
+    count++;
+    if (count > 99) count = 1;
 
-function count(){
-    countValue++;
-    document.getElementById("counter").innerText = countValue;
+    document.getElementById("counter").innerText = count;
 
-    if(countValue == target){
-        alert("MashaAllah! You reached 33.");
+    updateDhikr();
+    updateDots();
+    triggerGlow();
+}
+
+function updateDhikr() {
+    let dhikr = document.getElementById("dhikr");
+
+    if (count <= 33) {
+        dhikr.innerText = "سُبْحَانَ ٱللَّٰهِ";
+    } else if (count <= 66) {
+        dhikr.innerText = "ٱلْحَمْدُ لِلَّٰهِ";
+    } else {
+        dhikr.innerText = "ٱللَّٰهُ أَكْبَر";
     }
 }
 
-function reset(){
-    countValue = 0;
-    document.getElementById("counter").innerText = countValue;
+function updateDots() {
+    if (count >= 33) {
+        document.getElementById("dot1").classList.add("filled");
+    }
+    if (count >= 66) {
+        document.getElementById("dot2").classList.add("filled");
+    }
+    if (count >= 99) {
+        document.getElementById("dot3").classList.add("filled");
+    }
 }
 
+function triggerGlow() {
+    let circle = document.getElementById("circle");
+    circle.classList.add("glow");
+
+    setTimeout(() => {
+        circle.classList.remove("glow");
+    }, 150);
+}
+
+function resetCounter() {
+    count = 0;
+    document.getElementById("counter").innerText = count;
+
+    document.getElementById("dot1").classList.remove("filled");
+    document.getElementById("dot2").classList.remove("filled");
+    document.getElementById("dot3").classList.remove("filled");
+
+    updateDhikr();
+}
 </script>
 
 </body>
