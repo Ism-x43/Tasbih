@@ -1,27 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhikr and Tasbih– Islamic Tasbih Counter Online</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top, #0b1a2a, #020617);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.arabic {
+    font-size: 32px;
+    margin-bottom: 10px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.translation {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+.cycle {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-bottom: 30px;
+}
+
+.countBtn {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top, #0b1a2a, #020617);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(212,175,55,0.25);
+}
+
+.counter {
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+}
+
+.resetBtn {
+    margin-top: 20px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="arabic" id="dhikrArabic">سُبْحَانَ ٱللَّٰهِ</div>
+<div class="translation" id="dhikrTranslation">Allah is Perfect • Glory be to God</div>
+<div class="cycle" id="cycle">0 / 33</div>
+
+<button class="countBtn" onclick="count()">
+    <div class="counter" id="counter">0</div>
+</button>
+
+<div>
+    <button class="resetBtn" onclick="decrease()">−</button>
+    <button class="resetBtn" onclick="reset()">Reset</button>
+</div>
+
+</div>
+
 <script>
 let countValue = Number(localStorage.getItem('count')) || 0;
-let cycleTarget = 33;
-let phase = "main"; // main or istighfar
+let phaseIndex = Number(localStorage.getItem('phaseIndex')) || 0;
+
+// 0 = SubhanAllah (33)
+// 1 = Alhamdulillah (33)
+// 2 = Allahu Akbar (33)
+// 3 = La ilaha illallah (100)
+
+let phaseCounts = [33, 33, 33, 100];
 
 update();
 
 function count(){
     countValue++;
 
-    if(phase === "main" && countValue > 199){
-        // switch to istighfar phase after 100 La ilaha illallah counts
-        phase = "istighfar";
+    if(countValue >= phaseCounts[phaseIndex]){
         countValue = 0;
-        cycleTarget = 100;
-    }
-    else if(phase === "istighfar" && countValue > 100){
-        // return to main dhikr
-        phase = "main";
-        countValue = 0;
-        cycleTarget = 33;
+        phaseIndex = (phaseIndex + 1) % phaseCounts.length;
     }
 
     localStorage.setItem('count', countValue);
+    localStorage.setItem('phaseIndex', phaseIndex);
+
     update();
 }
 
@@ -35,57 +129,43 @@ function decrease(){
 
 function reset(){
     countValue = 0;
-    phase = "main";
-    cycleTarget = 33;
+    phaseIndex = 0;
+
     localStorage.setItem('count', countValue);
+    localStorage.setItem('phaseIndex', phaseIndex);
+
     update();
 }
 
 function update(){
-    const progressPercent = (countValue % cycleTarget) / cycleTarget * 100;
-    document.querySelector('.countBtn').style.setProperty('--progress', progressPercent + '%');
-
+    const target = phaseCounts[phaseIndex];
     document.getElementById("counter").innerText = countValue;
-    document.getElementById("cycle").innerText = countValue + " / " + cycleTarget;
+    document.getElementById("cycle").innerText = countValue + " / " + target;
 
-    let arabic = "سُبْحَانَ ٱللَّٰهِ";
-    let translation = "Allah is Perfect • Glory be to God";
+    let arabic = "";
+    let translation = "";
 
-    if(phase === "istighfar"){
-        arabic = "أَسْتَغْفِرُ ٱللَّٰهَ";
-        translation = "I seek forgiveness from Allah";
-    } else {
-        if(countValue >= 34 && countValue < 67){
-            arabic = "ٱلْحَمْدُ لِلَّٰهِ";
-            translation = "All praise belongs to Allah";
-        } else if(countValue >= 67 && countValue < 100){
-            arabic = "ٱللَّٰهُ أَكْبَر";
-            translation = "Allah is Greater";
-        } else if(countValue >= 100 && countValue < 200){
-            arabic = "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ";
-            translation = "There is no god but Allah";
-        }
+    if(phaseIndex === 0){
+        arabic = "سُبْحَانَ ٱللَّٰهِ";
+        translation = "Allah is Perfect • Glory be to God";
+    }
+    else if(phaseIndex === 1){
+        arabic = "ٱلْحَمْدُ لِلَّٰهِ";
+        translation = "All praise belongs to Allah";
+    }
+    else if(phaseIndex === 2){
+        arabic = "ٱللَّٰهُ أَكْبَر";
+        translation = "Allah is Greater";
+    }
+    else if(phaseIndex === 3){
+        arabic = "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ";
+        translation = "There is no god but Allah";
     }
 
-    setDhikr(arabic, translation);
-}
-
-function setDhikr(arabic, translation){
-    const arabicEl = document.getElementById("dhikrArabic");
-    const transEl = document.getElementById("dhikrTranslation");
-
-    arabicEl.classList.add("fade-out");
-    transEl.classList.add("fade-out");
-
-    setTimeout(()=>{
-        arabicEl.innerText = arabic;
-        transEl.innerText = translation;
-
-        arabicEl.classList.remove("fade-out");
-        transEl.classList.remove("fade-out");
-
-        arabicEl.classList.add("fade-in");
-        transEl.classList.add("fade-in");
-    }, 200);
+    document.getElementById("dhikrArabic").innerText = arabic;
+    document.getElementById("dhikrTranslation").innerText = translation;
 }
 </script>
+
+</body>
+</html>
