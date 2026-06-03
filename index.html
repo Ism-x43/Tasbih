@@ -69,7 +69,10 @@ body {
     width: 240px;
     height: 240px;
     border-radius: 50%;
-    background: conic-gradient(rgba(212,175,55,0.9) var(--progress, 0%), rgba(255,255,255,0.05) 0%);
+    background: conic-gradient(
+        rgba(212,175,55,0.9) var(--progress, 0%),
+        rgba(255,255,255,0.05) 0%
+    );
     mask: radial-gradient(circle, transparent 60%, black 61%);
     -webkit-mask: radial-gradient(circle, transparent 60%, black 61%);
     pointer-events: none;
@@ -127,21 +130,19 @@ body {
 <script>
 let countValue = Number(localStorage.getItem('count')) || 0;
 let cycleTarget = 33;
-let phase = "main"; // main or istighfar
+let phase = "main";
 
 update();
 
 function count(){
     countValue++;
 
-    if(phase === "main" && countValue > 100){
-        // switch to istighfar phase
+    if(phase === "main" && countValue > 199){
         phase = "istighfar";
         countValue = 0;
         cycleTarget = 100;
     }
     else if(phase === "istighfar" && countValue > 100){
-        // return to main dhikr
         phase = "main";
         countValue = 0;
         cycleTarget = 33;
@@ -168,28 +169,37 @@ function reset(){
 }
 
 function update(){
-    const progressPercent = (countValue % cycleTarget) / cycleTarget * 100;
-    document.querySelector('.countBtn').style.setProperty('--progress', progressPercent + '%');
+    const progressPercent =
+        (countValue % cycleTarget) / cycleTarget * 100;
+
+    document.querySelector('.countBtn')
+        .style.setProperty('--progress', progressPercent + '%');
 
     document.getElementById("counter").innerText = countValue;
-    document.getElementById("cycle").innerText = countValue + " / " + cycleTarget;
 
     let arabic = "سُبْحَانَ ٱللَّٰهِ";
     let translation = "Allah is Perfect • Glory be to God";
 
     if(phase === "istighfar"){
+        document.getElementById("cycle").innerText =
+            countValue + " / 100";
+
         arabic = "أَسْتَغْفِرُ ٱللَّٰهَ";
         translation = "I seek forgiveness from Allah";
     } else {
+
+        document.getElementById("cycle").innerText =
+            countValue + " / 199";
+
         if(countValue >= 34 && countValue < 67){
             arabic = "ٱلْحَمْدُ لِلَّٰهِ";
             translation = "All praise belongs to Allah";
-        } else if(countValue >= 67 && countValue <= 100){
+        }
+        else if(countValue >= 67 && countValue < 100){
             arabic = "ٱللَّٰهُ أَكْبَر";
             translation = "Allah is Greater";
         }
-
-        if(countValue === 100){
+        else if(countValue >= 100 && countValue <= 199){
             arabic = "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ";
             translation = "There is no god but Allah";
         }
@@ -217,7 +227,8 @@ function setDhikr(arabic, translation){
     }, 200);
 }
 </script>
-<h5> Inspired by Allah</h5>
+
+<h5>Inspired by Allah</h5>
+
 </body>
 </html>
-
