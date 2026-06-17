@@ -26,7 +26,6 @@ body {
 .arabic {
     font-size: 32px;
     margin-bottom: 10px;
-    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .translation {
@@ -77,9 +76,9 @@ body {
 
 <div class="container">
 
-<div class="arabic" id="dhikrArabic">سُبْحَانَ ٱللَّٰهِ</div>
-<div class="translation" id="dhikrTranslation">Allah is Perfect • Glory be to God</div>
-<div class="cycle" id="cycle">0 / 33</div>
+<div class="arabic" id="dhikrArabic"></div>
+<div class="translation" id="dhikrTranslation"></div>
+<div class="cycle" id="cycle"></div>
 
 <button class="countBtn" onclick="count()">
     <div class="counter" id="counter">0</div>
@@ -93,38 +92,56 @@ body {
 </div>
 
 <script>
+// 🔥 CLEAN STRUCTURED PHASES (no more broken if/else)
+const phases = [
+    {
+        arabic: "سُبْحَانَ ٱللَّٰهِ",
+        translation: "Allah is Perfect • Glory be to God",
+        count: 33
+    },
+    {
+        arabic: "ٱلْحَمْدُ لِلَّٰهِ",
+        translation: "All praise belongs to Allah",
+        count: 33
+    },
+    {
+        arabic: "ٱللَّٰهُ أَكْبَر",
+        translation: "Allah is Greater",
+        count: 33
+    },
+    {
+        arabic: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ",
+        translation: "There is no god but Allah",
+        count: 100
+    },
+    {
+        arabic: "أَسْتَغْفِرُ ٱللَّٰهَ",
+        translation: "I seek forgiveness from Allah",
+        count: 100
+    }
+];
+
 let countValue = Number(localStorage.getItem('count')) || 0;
 let phaseIndex = Number(localStorage.getItem('phaseIndex')) || 0;
-
-// Phases:
-// 0 = SubhanAllah (33)
-// 1 = Alhamdulillah (33)
-// 2 = Allahu Akbar (33)
-// 3 = La ilaha illallah (100)
-// 4 = Astaghfirullah (100)
-
-let phaseCounts = [33, 33, 33, 100, 100];
 
 update();
 
 function count(){
     countValue++;
 
-    if(countValue >= phaseCounts[phaseIndex]){
+    if(countValue >= phases[phaseIndex].count){
         countValue = 0;
-        phaseIndex = (phaseIndex + 1) % phaseCounts.length;
+        phaseIndex = (phaseIndex + 1) % phases.length;
     }
 
-    localStorage.setItem('count', countValue);
-    localStorage.setItem('phaseIndex', phaseIndex);
-
+    save();
     update();
 }
 
 function decrease(){
     if(countValue > 0){
         countValue--;
-        localStorage.setItem('count', countValue);
+        save();
         update();
     }
 }
@@ -132,45 +149,23 @@ function decrease(){
 function reset(){
     countValue = 0;
     phaseIndex = 0;
-
-    localStorage.setItem('count', countValue);
-    localStorage.setItem('phaseIndex', phaseIndex);
-
+    save();
     update();
 }
 
+function save(){
+    localStorage.setItem('count', countValue);
+    localStorage.setItem('phaseIndex', phaseIndex);
+}
+
 function update(){
-    const target = phaseCounts[phaseIndex];
+    const phase = phases[phaseIndex];
 
     document.getElementById("counter").innerText = countValue;
-    document.getElementById("cycle").innerText = countValue + " / " + target;
+    document.getElementById("cycle").innerText = countValue + " / " + phase.count;
 
-    let arabic = "";
-    let translation = "";
-
-    if(phaseIndex === 0){
-        arabic = "سُبْحَانَ ٱللَّٰهِ";
-        translation = "Allah is Perfect • Glory be to God";
-    }
-    else if(phaseIndex === 1){
-        arabic = "ٱلْحَمْدُ لِلَّٰهِ";
-        translation = "All praise belongs to Allah";
-    }
-    else if(phaseIndex === 2){
-        arabic = "ٱللَّٰهُ أَكْبَر";
-        translation = "Allah is Greater";
-    }
-    else if(phaseIndex === 3){
-        arabic = "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ";
-        translation = "There is no god but Allah";
-    }
-    else if(phaseIndex === 4){
-        arabic = "أَسْتَغْفِرُ ٱللَّٰهَ";
-        translation = "I seek forgiveness from Allah";
-    }
-
-    document.getElementById("dhikrArabic").innerText = arabic;
-    document.getElementById("dhikrTranslation").innerText = translation;
+    document.getElementById("dhikrArabic").innerText = phase.arabic;
+    document.getElementById("dhikrTranslation").innerText = phase.translation;
 }
 </script>
 
