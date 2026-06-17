@@ -96,12 +96,14 @@ body {
 let countValue = Number(localStorage.getItem('count')) || 0;
 let phaseIndex = Number(localStorage.getItem('phaseIndex')) || 0;
 
+// Phases:
 // 0 = SubhanAllah (33)
 // 1 = Alhamdulillah (33)
 // 2 = Allahu Akbar (33)
 // 3 = La ilaha illallah (100)
+// 4 = Astaghfirullah (100)
 
-let phaseCounts = [33, 33, 33, 100];
+let phaseCounts = [33, 33, 33, 100, 100];
 
 update();
 
@@ -139,6 +141,7 @@ function reset(){
 
 function update(){
     const target = phaseCounts[phaseIndex];
+
     document.getElementById("counter").innerText = countValue;
     document.getElementById("cycle").innerText = countValue + " / " + target;
 
@@ -160,6 +163,10 @@ function update(){
     else if(phaseIndex === 3){
         arabic = "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ";
         translation = "There is no god but Allah";
+    }
+    else if(phaseIndex === 4){
+        arabic = "أَسْتَغْفِرُ ٱللَّٰهَ";
+        translation = "I seek forgiveness from Allah";
     }
 
     document.getElementById("dhikrArabic").innerText = arabic;
